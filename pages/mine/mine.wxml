@@ -1,0 +1,20 @@
+<view class="page">
+
+  <view class="navbar" style="padding-top: {{statusPad}}px;">
+    <view class="navbar-inner">
+      <view class="navbar-title font-serif">我的</view>
+    </view>
+  </view>
+
+  <view class="me">
+    <view class="me-avatar font-serif">山</view>
+    <view class="me-name font-serif">参芪山房</view>
+    <view class="me-note">登录、订单、卡券，正式版接入</view>
+  </view>
+
+  <view class="foot">
+    <view class="foot-promise font-serif">参芪好，食养才好</view>
+    <view class="foot-brand">参芪山房 丽珠集团出品</view>
+  </view>
+
+</view>

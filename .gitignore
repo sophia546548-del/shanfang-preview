@@ -1,0 +1,4 @@
+project.private.config.json
+*.docx
+Thumbs.db
+.DS_Store

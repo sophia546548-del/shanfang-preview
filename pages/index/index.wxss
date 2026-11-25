@@ -1,0 +1,392 @@
+/* ═══ 头屏：全屏药材静物大图（观夏式） ═══ */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 1180rpx;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(22, 28, 20, 0) 62%,
+    rgba(246, 242, 233, 0.55) 88%,
+    rgba(246, 242, 233, 0.97) 98%
+  );
+}
+
+/* 海报之后：背书小字，落回米白区 */
+.hero-after {
+  text-align: center;
+  padding: 26rpx 0 6rpx;
+  font-size: 22rpx;
+  color: #6E736A;
+  letter-spacing: 8rpx;
+}
+
+/* 下滑引导：一截细线，缓缓落下 */
+.hero-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: 40rpx;
+  width: 1rpx;
+  height: 52rpx;
+  background: rgba(246, 242, 233, 0.55);
+  animation: sink 2.4s ease-in-out infinite;
+}
+@keyframes sink {
+  0%   { transform: translateY(-14rpx); opacity: 0; }
+  35%  { opacity: 1; }
+  100% { transform: translateY(16rpx); opacity: 0; }
+}
+
+/* ═══ 品牌故事段 ═══ */
+.brand-story {
+  padding: 110rpx 56rpx 92rpx;
+}
+.brand-story-lead {
+  font-size: 44rpx;
+  letter-spacing: 4rpx;
+  color: #2B2F2A;
+  line-height: 1.6;
+}
+.brand-story-p {
+  margin-top: 34rpx;
+  font-size: 26rpx;
+  line-height: 2.15;
+  letter-spacing: 2rpx;
+  color: #4A4F48;
+}
+.brand-story-end {
+  margin-top: 38rpx;
+  font-size: 26rpx;
+  letter-spacing: 3rpx;
+  color: #6E736A;
+}
+
+/* ═══ 场景宫格：五养 ═══ */
+.scene-scroll {
+  margin-top: 44rpx;
+  white-space: nowrap;
+}
+.scene-card {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 300rpx;
+  height: 470rpx;
+  margin-left: 24rpx;
+  border-radius: 6rpx;
+  color: #F2EEE3;
+  overflow: hidden;
+}
+.scene-card:first-child { margin-left: 40rpx; }
+.scene-tail { display: inline-block; width: 40rpx; }
+
+.scene-num {
+  position: absolute;
+  top: 26rpx;
+  left: 26rpx;
+  font-size: 30rpx;
+  opacity: 0.6;
+}
+.scene-icon {
+  position: absolute;
+  top: 22rpx;
+  left: 66rpx;
+  width: 40rpx;
+  height: 40rpx;
+  opacity: 0.85;
+}
+.scene-name {
+  position: absolute;
+  top: 92rpx;
+  left: 28rpx;
+  font-size: 52rpx;
+  letter-spacing: 6rpx;
+  writing-mode: vertical-rl;
+}
+.scene-desc {
+  position: absolute;
+  left: 96rpx;
+  right: 70rpx;
+  top: 92rpx;
+  font-size: 22rpx;
+  line-height: 1.9;
+  color: rgba(246, 242, 233, 0.82);
+  white-space: normal;
+}
+.scene-quote {
+  position: absolute;
+  right: 28rpx;
+  top: 28rpx;
+  font-size: 20rpx;
+  color: rgba(246, 242, 233, 0.92);
+  max-height: 300rpx;
+}
+.scene-more {
+  position: absolute;
+  left: 28rpx;
+  bottom: 26rpx;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+  color: rgba(246, 242, 233, 0.7);
+}
+
+/* ═══ 千年一味：竖版立轴，每页茶烟为底 ═══ */
+.roll-wrap {
+  margin: 60rpx 0 0;
+}
+.roll-frame {
+  position: relative;
+  height: 1334rpx;
+  overflow: hidden;
+}
+.roll-swiper {
+  position: relative;
+  height: 1334rpx;
+  z-index: 2;
+}
+
+/* 单页容器：视频底、暗纱、文字三层 */
+.roll-pagebox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.roll-pagebg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+.roll-pageveil {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(22, 17, 9, 0.32) 0%,
+    rgba(22, 17, 9, 0.10) 34%,
+    rgba(22, 17, 9, 0.14) 66%,
+    rgba(22, 17, 9, 0.44) 100%);
+}
+
+/* 卷页：文字浮于动画上，一律浅色 */
+.roll-page {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 84rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.roll-page-head {
+  align-items: center;
+  text-align: center;
+}
+.roll-title {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  font-size: 108rpx;
+  color: #F6F2E9;
+  letter-spacing: 28rpx;
+  text-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.35);
+}
+.roll-head-sub {
+  margin-top: 40rpx;
+  font-size: 24rpx;
+  color: rgba(246, 242, 233, 0.88);
+  letter-spacing: 9rpx;
+  text-shadow: 0 1rpx 10rpx rgba(0, 0, 0, 0.35);
+}
+
+/* 幕页 */
+.roll-time {
+  font-size: 26rpx;
+  color: #D9C9A0;
+  letter-spacing: 14rpx;
+  text-shadow: 0 1rpx 8rpx rgba(0, 0, 0, 0.4);
+}
+.roll-time-line {
+  width: 56rpx;
+  height: 2rpx;
+  background: #C8A15E;
+  margin: 24rpx 0 30rpx;
+}
+.roll-item-title {
+  font-size: 44rpx;
+  color: #F6F2E9;
+  letter-spacing: 4rpx;
+  margin-bottom: 26rpx;
+  text-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.35);
+}
+.roll-item-text {
+  font-size: 26rpx;
+  line-height: 2;
+  letter-spacing: 1rpx;
+  color: rgba(246, 242, 233, 0.93);
+  text-shadow: 0 1rpx 8rpx rgba(0, 0, 0, 0.4);
+}
+
+/* 天杆地杆 */
+.roll-rod {
+  position: absolute;
+  left: -14rpx;
+  right: -14rpx;
+  height: 26rpx;
+  background: linear-gradient(180deg, #23282B 0%, #4A5648 50%, #23282B 100%);
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 14rpx rgba(0, 0, 0, 0.25);
+  z-index: 3;
+}
+.roll-rod.top { top: -14rpx; }
+.roll-rod.bottom { bottom: -14rpx; }
+
+/* 进度刻度 */
+.roll-dots {
+  display: flex;
+  justify-content: center;
+  gap: 22rpx;
+  margin-top: 34rpx;
+}
+.roll-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: rgba(43, 47, 42, 0.18);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.roll-dot.on {
+  background: #C8A15E;
+  transform: scale(1.4);
+}
+
+/* ═══ 明星单品 ═══ */
+.featured { padding: 48rpx 48rpx 12rpx; }
+.feat-card {
+  display: flex;
+  margin-bottom: 22rpx;
+  background: #FCFAF3;
+  border: 1rpx solid rgba(43, 47, 42, 0.08);
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+.feat-img {
+  width: 210rpx;
+  height: 225rpx;
+  border: 1rpx solid rgba(43, 47, 42, 0.16);
+  border-radius: 6rpx;
+  background: #FCFAF3;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.feat-img-img {
+  width: 210rpx;
+  height: 225rpx;
+  display: block;
+}
+.feat-body {
+  flex: 1;
+  padding: 36rpx 32rpx;
+}
+.feat-name {
+  font-size: 33rpx;
+  letter-spacing: 2rpx;
+}
+.feat-desc {
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  color: #6E736A;
+}
+.feat-spec {
+  margin-top: 14rpx;
+  font-size: 21rpx;
+  color: #9A9E93;
+  letter-spacing: 1rpx;
+}
+
+/* ═══ 致礼专区入口 ═══ */
+.gift-entry {
+  position: relative;
+  margin: 80rpx 48rpx 0;
+  height: 260rpx;
+  border-radius: 6rpx;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.gift-entry-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, #5C4630 0%, #7A5C3E 58%, #8C7A52 100%);
+}
+.gift-entry-name {
+  position: absolute;
+  right: 36rpx;
+  top: 32rpx;
+  font-size: 40rpx;
+  color: rgba(246, 242, 233, 0.92);
+  letter-spacing: 10rpx;
+}
+.gift-entry-body {
+  position: relative;
+  padding-left: 40rpx;
+}
+.gift-entry-title {
+  font-size: 40rpx;
+  color: #F2EEE3;
+  letter-spacing: 6rpx;
+}
+.gift-entry-desc {
+  margin-top: 14rpx;
+  font-size: 23rpx;
+  color: rgba(246, 242, 233, 0.78);
+  letter-spacing: 2rpx;
+}
+.gift-entry-arrow {
+  position: absolute;
+  right: 60rpx;
+  bottom: 30rpx;
+  color: rgba(246, 242, 233, 0.7);
+  font-size: 30rpx;
+}
+
+/* ═══ 底部承诺：弱化，不抢眼 ═══ */
+.foot {
+  position: relative;
+  margin-top: 60rpx;
+  padding: 120rpx 0 70rpx;
+  text-align: center;
+}
+.foot-promise {
+  position: relative;
+  font-size: 26rpx;
+  color: #6E736A;
+  letter-spacing: 6rpx;
+}
+.foot-brand {
+  position: relative;
+  margin-top: 14rpx;
+  font-size: 20rpx;
+  color: #8A8F85;
+  letter-spacing: 3rpx;
+}

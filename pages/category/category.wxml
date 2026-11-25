@@ -1,0 +1,64 @@
+<view class="page">
+
+  <!-- 自定义导航栏 -->
+  <view class="navbar" style="padding-top: {{statusPad}}px;">
+    <view class="navbar-inner">
+      <view class="navbar-title font-serif">参芪山房 五养</view>
+    </view>
+  </view>
+
+  <!-- 场景 Tab：吸顶，一级导航 -->
+  <view class="tabs">
+    <view class="tab {{active === index ? 'tab-on' : ''}}"
+          wx:for="{{scenes}}" wx:key="key"
+          bindtap="switchTab" data-index="{{index}}">
+      <view class="tab-name font-serif">{{item.name}}</view>
+      <view class="tab-sub">{{item.sub}}</view>
+    </view>
+  </view>
+
+  <!-- 系列内容：左右滑动切换 -->
+  <swiper class="swiper" current="{{active}}" bindchange="onSwiperChange">
+    <swiper-item wx:for="{{scenes}}" wx:for-item="scene" wx:key="key">
+
+      <scroll-view scroll-y class="scroll">
+        <!-- 系列页头图（如清饮的药碗） -->
+        <image wx:if="{{scene.banner}}" class="scene-banner" src="/images/{{scene.banner}}" mode="aspectFill" />
+        <!-- 系列页头：题跋式 -->
+        <view class="scene-head">
+          <view class="scene-rail" style="background: {{scene.color}};"></view>
+          <view class="scene-head-main">
+            <view class="scene-big font-serif">{{scene.name}}</view>
+            <view class="scene-full">{{scene.name}} {{scene.sub}}</view>
+            <view class="scene-note">{{scene.note}}</view>
+          </view>
+          <view class="scene-head-quote">
+            <view class="scene-quote font-serif">{{scene.quote}}</view>
+            <view class="scene-quote-from">—— {{scene.quoteFrom}}</view>
+          </view>
+        </view>
+
+        <!-- 产品流 -->
+        <view class="product" wx:for="{{scene.products}}" wx:for-item="p" wx:key="name"
+              bindtap="toastSoon">
+          <view class="product-rail" style="background: {{scene.color}};"></view>
+          <view class="product-img">
+            <image class="product-img-img" src="/images/illust/{{scene.img}}.png" mode="aspectFill" />
+          </view>
+          <view class="product-body">
+            <view class="product-name font-serif">{{p.name}}</view>
+            <view class="product-desc">{{p.desc}}</view>
+            <view class="product-spec">{{p.spec}}</view>
+          </view>
+          <view class="product-arrow">→</view>
+        </view>
+
+        <view class="scene-foot">
+          <view class="scene-foot-text">—— 本系列已尽 ——</view>
+        </view>
+      </scroll-view>
+
+    </swiper-item>
+  </swiper>
+
+</view>

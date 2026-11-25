@@ -1,0 +1,4 @@
+{
+  "desc": "demo 全页面可索引",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

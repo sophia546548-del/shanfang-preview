@@ -1,0 +1,115 @@
+<view class="page">
+
+  <!-- ═══ 一、头屏：全屏海报（字图一体成品） ═══ -->
+  <view class="hero">
+    <image class="hero-bg" src="/images/hero-poster.jpg" mode="aspectFill" />
+    <view class="hero-mask"></view>
+    <view class="hero-arrow"></view>
+  </view>
+  <view class="hero-after">丽珠集团出品</view>
+
+  <!-- ═══ 品牌故事段 ═══ -->
+  <view class="brand-story">
+    <view class="brand-story-lead font-serif">药与食，本是同源一味。</view>
+    <view class="brand-story-p">三千年前，《素问》写下"五谷为养"；一千四百年前，孙思邈立"先食后药"之法。山房承此古意，取恒山正北芪、陇西白条党参，以药企之谨，做日常之食。</view>
+    <view class="brand-story-end font-serif">四季流转，愿这一味，入你的一饮一食。</view>
+  </view>
+
+  <!-- ═══ 二、场景宫格：五养（横滑大卡，首页即一级入口） ═══ -->
+  <view class="section-head">
+    <view class="section-title font-serif">五养</view>
+    <view class="section-note">依时而选，取你所需</view>
+  </view>
+  <view class="section-line"></view>
+
+  <scroll-view class="scene-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="scene-card font-serif"
+          wx:for="{{scenes}}" wx:key="key"
+          style="background: {{item.color}};"
+          bindtap="goScene" data-index="{{index}}">
+      <view class="scene-num font-serif">{{item.num}}</view>
+      <image class="scene-icon" src="/images/illust/{{item.icon}}.png" mode="aspectFit" />
+      <view class="scene-name font-serif">{{item.name}}</view>
+      <view class="scene-desc">{{item.note}}</view>
+      <view class="scene-quote vertical-text">{{item.quote}}</view>
+      <view class="scene-more">入此系列 →</view>
+    </view>
+    <view class="scene-tail"></view>
+  </scroll-view>
+
+  <!-- ═══ 三、千年一味：竖版立轴，每页茶烟为底 ═══ -->
+  <view class="roll-wrap">
+    <view class="roll-frame">
+      <swiper class="roll-swiper" current="{{rollIdx}}" autoplay interval="6000" duration="800" bindchange="onRollChange">
+        <swiper-item wx:for="{{rollPages}}" wx:key="key">
+          <view class="roll-pagebox">
+            <!-- 兜底静帧：视频未起播或模拟器不渲染时显示 -->
+            <image class="roll-pagebg" src="/images/tea-poster.jpg" mode="aspectFill" />
+            <!-- 仅当前页挂载视频，autoplay 为官方自动播放通道 -->
+            <video wx:if="{{rollIdx === index}}" id="rv-{{index}}" class="roll-pagebg" src="{{item.video}}"
+                   autoplay loop muted controls="{{false}}" show-fullscreen-btn="{{false}}"
+                   show-play-btn="{{false}}" show-center-play-btn="{{false}}" object-fit="cover"
+                   binderror="onVideoErr" />
+            <view class="roll-pageveil"></view>
+            <view class="roll-page {{item.head ? 'roll-page-head' : ''}}">
+              <block wx:if="{{item.head}}">
+                <view class="roll-title vertical-text brand-calli">{{item.title}}</view>
+                <view class="roll-head-sub font-serif">{{item.sub}}</view>
+              </block>
+              <block wx:else>
+                <view class="roll-time font-serif">{{item.time}}</view>
+                <view class="roll-time-line"></view>
+                <view class="roll-item-title font-serif">{{item.title}}</view>
+                <view class="roll-item-text">{{item.text}}</view>
+              </block>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+      <!-- 天杆地杆 -->
+      <view class="roll-rod top"></view>
+      <view class="roll-rod bottom"></view>
+    </view>
+    <!-- 进度刻度 -->
+    <view class="roll-dots">
+      <view class="roll-dot {{rollIdx === i ? 'on' : ''}}" wx:for="{{4}}" wx:for-index="i" wx:key="i" data-i="{{i}}" bindtap="goRoll"></view>
+    </view>
+  </view>
+
+  <!-- ═══ 四、明星单品 ═══ -->
+  <view class="section-head">
+    <view class="section-title font-serif">山房荐</view>
+    <view class="section-note">两味，日常常备</view>
+  </view>
+  <view class="section-line"></view>
+
+  <view class="featured">
+    <view class="feat-card" wx:for="{{featured}}" wx:key="name" bindtap="toastSoon">
+      <view class="feat-img">
+        <image class="feat-img-img" src="/images/illust/{{item.img}}.png" mode="aspectFill" />
+      </view>
+      <view class="feat-body">
+        <view class="feat-name font-serif">{{item.name}}</view>
+        <view class="feat-desc">{{item.desc}}</view>
+        <view class="feat-spec">{{item.spec}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ═══ 五、致礼专区入口 ═══ -->
+  <view class="gift-entry" bindtap="goGift">
+    <view class="gift-entry-mask"></view>
+    <view class="gift-entry-name vertical-text font-serif">致礼</view>
+    <view class="gift-entry-body">
+      <view class="gift-entry-title font-serif">体面之赠</view>
+      <view class="gift-entry-desc">节庆、商务、探病，一份参芪的心意</view>
+    </view>
+    <view class="gift-entry-arrow">→</view>
+  </view>
+
+  <view class="foot">
+    <view class="foot-promise font-serif">参芪好，食养才好</view>
+    <view class="foot-brand">参芪山房 丽珠集团出品</view>
+  </view>
+
+</view>

@@ -1,0 +1,32 @@
+<view class="page">
+
+  <view class="navbar" style="padding-top: {{statusPad}}px;">
+    <view class="navbar-inner">
+      <view class="navbar-title font-serif">参芪山房 致礼</view>
+    </view>
+  </view>
+
+  <!-- 题跋引言 -->
+  <view class="gift-head">
+    <view class="gift-quote font-serif">黄耆色黄，为补者之长</view>
+    <view class="gift-quote-from">—— 《本草纲目》</view>
+    <view class="gift-note">节庆、商务、探病，一份参芪的心意</view>
+  </view>
+
+  <!-- 礼盒流 -->
+  <view class="card" wx:for="{{gifts}}" wx:key="name" bindtap="toastSoon">
+    <view class="card-mask" style="background: {{item.bg}};"></view>
+    <view class="card-word vertical-text font-serif">{{item.word}}</view>
+    <view class="card-body">
+      <view class="card-name font-serif">{{item.name}}</view>
+      <view class="card-desc">{{item.desc}}</view>
+      <view class="card-spec">{{item.spec}}</view>
+    </view>
+    <view class="card-arrow">→</view>
+  </view>
+
+  <view class="foot">
+    <view class="foot-promise">参芪好，食养才好</view>
+  </view>
+
+</view>

@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>参芪山房 网页预览</title>
+<style>
+/* ═══ 基调 ═══ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --paper: #F6F2E9;      /* 宣纸白 */
+  --paper-card: #FCFAF3; /* 卡片米白 */
+  --ink: #2B2F2A;        /* 松烟墨 */
+  --green: #3F4E3F;      /* 苍绿 */
+  --gold: #C8A15E;       /* 赭金 */
+  --grey: #8A8F85;
+  --grey-light: #B4B8AE;
+}
+html { background: #E9E4D8; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--ink);
+  line-height: 1.7;
+  display: flex;
+  justify-content: center;
+}
+/* 模拟手机屏幕：桌面居中成手机宽度，真机上全宽 */
+.app {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  background: #F6F2E9 url('images/tile.jpg') repeat;
+  background-size: 250px 250px;
+  position: relative;
+  box-shadow: 0 0 60px rgba(0,0,0,.12);
+}
+/* 标题宋体：品牌字体子集优先，桌面字体兜底 */
+.serif {
+  font-family: "SQSerif", "STZhongsong", "华文中宋", "Songti SC", "STSong", "SimSun", serif;
+}
+@font-face {
+  font-family: 'SQSerif';
+  src: url('assets/serif.woff') format('woff');
+  font-display: swap;
+}
+/* 毛笔字：品牌行楷子集 */
+.brand-calli {
+  font-family: "SQCalli", "STXingkai", "华文行楷", "Kaiti SC", "STKaiti", "KaiTi", "SQSerif", serif;
+}
+@font-face {
+  font-family: 'SQCalli';
+  src: url('assets/calli.woff') format('woff');
+  font-display: swap;
+}
+.vertical { writing-mode: vertical-rl; }
+
+.view { display: none; padding-bottom: 110px; }
+.view.on { display: block; }
+
+/* ═══ 头屏：全屏海报（字图一体成品） ═══ */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  background: url('images/hero-poster.jpg') center / cover no-repeat #3A4234;
+}
+/* 仅底部渐隐到宣纸白，让海报融进下方内容 */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(22, 28, 20, 0) 62%,
+    rgba(246, 242, 233, 0.55) 88%,
+    rgba(246, 242, 233, 0.97) 98%);
+}
+
+/* 海报之后：背书小字，落回米白区 */
+.hero-after {
+  text-align: center;
+  padding: 26px 0 4px;
+  font-size: 14px;
+  color: #9A9E93;
+  letter-spacing: 6px;
+}
+
+/* 下滑引导：一截细线，缓缓落下 */
+.hero-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  width: 1px;
+  height: 40px;
+  background: rgba(246,242,233,.55);
+  animation: sink 2.4s ease-in-out infinite;
+}
+@keyframes sink {
+  0%   { transform: translateY(-12px); opacity: 0; }
+  35%  { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+
+/* ═══ 品牌故事段：头屏之后，五养之前 ═══ */
+.brand-story {
+  padding: 110px 40px 92px;
+}
+.brand-story-lead {
+  font-size: 30px;
+  letter-spacing: 3px;
+  color: #2B2F2A;
+  line-height: 1.6;
+}
+.brand-story-p {
+  margin-top: 30px;
+  font-size: 16.5px;
+  line-height: 2.15;
+  letter-spacing: 0.06em;
+  color: #4A4F48;
+  max-width: 30em;
+}
+.brand-story-end {
+  margin-top: 34px;
+  font-size: 16.5px;
+  letter-spacing: 0.08em;
+  color: #6E736A;
+}
+
+/* ═══ 栏目头 ═══ */
+.section-head { display: flex; align-items: baseline; padding: 76px 32px 22px; }
+.section-title { font-size: 34px; font-weight: 600; letter-spacing: 5px; }
+.section-note { margin-left: 18px; font-size: 17px; color: var(--grey); letter-spacing: 3px; }
+.section-line {
+  margin: 0 32px;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold), rgba(200,161,94,0) 60%);
+}
+
+/* ═══ 五养宫格 ═══ */
+.h-scroll {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 38px 32px 14px;
+  scrollbar-width: none;
+}
+.h-scroll::-webkit-scrollbar { display: none; }
+.scene-card {
+  position: relative;
+  flex: 0 0 auto;
+  width: 210px;
+  height: 330px;
+  border-radius: 4px;
+  color: #F2EEE3;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .35s ease;
+}
+.scene-card:active { transform: scale(.97); }
+.scene-num { position: absolute; top: 20px; left: 20px; font-size: 21px; opacity: .6; }
+.scene-icon {
+  position: absolute;
+  top: 16px;
+  left: 52px;
+  width: 26px;
+  height: 26px;
+  opacity: .85;
+}
+.scene-name {
+  position: absolute;
+  top: 66px; left: 20px;
+  font-size: 38px; letter-spacing: 5px;
+  writing-mode: vertical-rl;
+}
+.scene-desc {
+  position: absolute;
+  left: 72px; right: 48px; top: 66px;
+  font-size: 15px;
+  line-height: 1.9;
+  color: rgba(246,242,233,.82);
+}
+.scene-quote {
+  position: absolute;
+  right: 20px; top: 20px;
+  font-size: 14px;
+  color: rgba(226,216,192,.75);
+  max-height: 210px;
+}
+.scene-more {
+  position: absolute;
+  left: 20px; bottom: 18px;
+  font-size: 15px;
+  color: rgba(246,242,233,.7);
+  letter-spacing: 2px;
+}
+
+/* ═══ 千年一味：竖版立轴，全屏，茶烟为底 ═══ */
+.roll-wrap {
+  margin: 56px 0 0;
+}
+.roll-frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+}
+
+/* 茶烟垫底与暗纱（旧版整卷背景，已由每页独立背景替代，样式移除） */
+.roll-track {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.roll-track::-webkit-scrollbar { display: none; }
+
+/* 单页容器：视频底、暗纱、文字三层 */
+.roll-pagebox {
+  position: relative;
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  overflow: hidden;
+}
+.roll-pagebg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.roll-pageveil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(22, 17, 9, 0.32) 0%,
+    rgba(22, 17, 9, 0.10) 34%,
+    rgba(22, 17, 9, 0.14) 66%,
+    rgba(22, 17, 9, 0.44) 100%);
+}
+
+/* 卷页：文字浮于动画上，一律浅色 */
+.roll-page {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.roll-page-head {
+  align-items: center;
+  text-align: center;
+}
+.roll-title {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  font-size: 64px;
+  color: #F6F2E9;
+  letter-spacing: 16px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+.roll-head-sub {
+  margin-top: 24px;
+  font-size: 15px;
+  color: rgba(246, 242, 233, 0.88);
+  letter-spacing: 5px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+
+/* 幕页 */
+.roll-time {
+  font-size: 16px;
+  color: #D9C9A0;
+  letter-spacing: 8px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}
+.roll-time-line {
+  width: 30px;
+  height: 1px;
+  background: #C8A15E;
+  margin: 14px 0 18px;
+}
+.roll-item-title {
+  font-size: 27px;
+  color: #F6F2E9;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+.roll-item-text {
+  font-size: 15.5px;
+  line-height: 2;
+  letter-spacing: 0.02em;
+  color: rgba(246, 242, 233, 0.93);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* 天杆地杆 */
+.roll-rod {
+  position: absolute;
+  left: -7px;
+  right: -7px;
+  height: 13px;
+  background: linear-gradient(180deg, #23282B 0%, #4A5648 50%, #23282B 100%);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 3;
+  pointer-events: none;
+}
+.roll-rod.top { top: -7px; }
+.roll-rod.bottom { bottom: -7px; }
+
+/* 进度刻度 */
+.roll-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+.roll-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(43, 47, 42, 0.18);
+  transition: background 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+.roll-dots span.on {
+  background: #C8A15E;
+  transform: scale(1.4);
+}
+
+/* ═══ 明星单品 ═══ */
+.featured { padding: 38px 32px 6px; }
+.feat-card {
+  display: flex;
+  margin-bottom: 22px;
+  background: var(--paper-card);
+  border: 1px solid rgba(43,47,42,.08);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.feat-img {
+  width: 140px; height: 150px;
+  border: 1px solid rgba(43,47,42,.16);
+  border-radius: 4px;
+  background: #FCFAF3;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.feat-img img { width: 100%; height: 100%; object-fit: cover; }
+.feat-body { flex: 1; padding: 26px 20px; }
+.feat-name { font-size: 24px; letter-spacing: 2px; }
+.feat-desc { margin-top: 10px; font-size: 16px; color: #6E736A; }
+.feat-spec { margin-top: 12px; font-size: 14px; color: #9A9E93; letter-spacing: 1px; }
+
+/* ═══ 致礼入口 ═══ */
+.gift-entry {
+  position: relative;
+  margin: 64px 32px 0;
+  height: 185px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex; align-items: center;
+  cursor: pointer;
+}
+.gift-entry::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg,#5C4630 0%,#7A5C3E 58%,#8C7A52 100%);
+}
+.gift-entry-name {
+  position: absolute; right: 24px; top: 22px;
+  font-size: 30px; color: rgba(246,242,233,.92); letter-spacing: 8px;
+}
+.gift-entry-body { position: relative; padding-left: 28px; }
+.gift-entry-title { font-size: 30px; color: #F2EEE3; letter-spacing: 5px; }
+.gift-entry-desc { margin-top: 10px; font-size: 16px; color: rgba(246,242,233,.78); letter-spacing: 2px; }
+.gift-entry-arrow { position: absolute; right: 44px; bottom: 20px; color: rgba(246,242,233,.7); font-size: 22px; }
+
+/* ═══ 底部承诺 ═══ */
+.foot {
+  position: relative;
+  margin: 56px 0 0;
+  padding: 96px 0 42px;
+  text-align: center;
+}
+.foot-promise { font-size: 19px; color: #6E736A; letter-spacing: 5px; }
+.foot-brand { margin-top: 10px; font-size: 14px; color: #8A8F85; letter-spacing: 3px; }
+
+/* ═══ 导航栏 + Tab ═══ */
+.navbar {
+  padding-top: env(safe-area-inset-top);
+  background: var(--paper);
+}
+.navbar-inner {
+  height: 62px;
+  display: flex; align-items: center; justify-content: center;
+}
+.navbar-title { font-size: 23px; letter-spacing: 5px; }
+
+.tabs {
+  display: flex;
+  background: var(--paper);
+  border-bottom: 1px solid rgba(43,47,42,.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.tab {
+  flex: 1;
+  padding: 15px 0 13px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
+.tab .t-name { font-size: 21px; color: #6E736A; letter-spacing: 3px; }
+.tab .t-sub { margin-top: 2px; font-size: 12px; color: #9A9E93; }
+.tab.on .t-name { color: var(--green); }
+.tab.on .t-sub { color: var(--gold); }
+.tab.on::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: 6px;
+  transform: translateX(-50%);
+  width: 22px; height: 2px;
+  background: var(--gold);
+}
+
+/* ═══ 系列页头 ═══ */
+.scene-banner {
+  margin: 32px 32px 0;
+  height: 210px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.scene-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.scene-head {
+  display: flex;
+  margin: 38px 32px 8px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(43,47,42,.08);
+}
+.scene-rail { width: 4px; align-self: stretch; margin-right: 22px; border-radius: 2px; }
+.scene-big { font-size: 60px; letter-spacing: 9px; line-height: 1.2; }
+.scene-full { margin-top: 8px; font-size: 17px; color: var(--grey); letter-spacing: 4px; }
+.scene-note { margin-top: 16px; font-size: 19px; color: #4A4F48; }
+.scene-head-quote {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: flex-end; align-items: flex-end;
+  text-align: right;
+}
+.scene-quote { font-size: 17px; color: #6E736A; line-height: 1.9; max-width: 180px; }
+.scene-quote-from { margin-top: 8px; font-size: 13px; color: #9A9E93; }
+
+/* ═══ 产品卡 ═══ */
+.product {
+  display: flex;
+  align-items: center;
+  margin: 22px 32px 0;
+  padding: 18px;
+  background: #FCFAF3;
+  border: 1px solid rgba(43,47,42,.12);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.product:active { opacity: .7; }
+.p-rail { width: 3px; height: 60px; border-radius: 2px; margin-right: 15px; }
+.p-img {
+  width: 84px; height: 84px;
+  border-radius: 4px;
+  background: #F3EFE4;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.p-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.p-body { flex: 1; margin-left: 18px; }
+.p-name { font-size: 23px; letter-spacing: 2px; }
+.p-desc { margin-top: 6px; font-size: 15px; color: #6E736A; }
+.p-spec { margin-top: 8px; font-size: 13px; color: #9A9E93; letter-spacing: 1px; }
+.p-arrow { margin-left: 14px; color: var(--gold); font-size: 20px; }
+.scene-foot {
+  position: relative;
+  margin-top: 48px;
+  padding: 80px 0 40px;
+  text-align: center;
+  font-size: 15px;
+  color: #8A8F85;
+  letter-spacing: 4px;
+}
+
+/* ═══ 礼盒页 ═══ */
+.gift-head {
+  padding: 44px 32px 36px;
+  border-bottom: 1px solid rgba(43,47,42,.08);
+}
+.gift-quote { font-size: 25px; color: #4A4F48; letter-spacing: 2px; }
+.gift-quote-from { margin-top: 8px; font-size: 15px; color: #9A9E93; }
+.gift-note { margin-top: 18px; font-size: 19px; color: #6E736A; letter-spacing: 2px; }
+.g-card {
+  position: relative;
+  margin: 30px 32px 0;
+  height: 182px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex; align-items: center;
+  cursor: pointer;
+}
+.g-card:active { opacity: .9; }
+.g-word {
+  position: absolute; right: 26px; top: 24px;
+  font-size: 30px; color: rgba(246,242,233,.9); letter-spacing: 8px;
+}
+.g-body { position: relative; padding-left: 28px; max-width: 320px; }
+.g-name { font-size: 26px; color: #F2EEE3; letter-spacing: 3px; }
+.g-desc { margin-top: 8px; font-size: 15px; color: rgba(246,242,233,.78); }
+.g-spec { margin-top: 8px; font-size: 13px; color: rgba(246,242,233,.55); }
+.g-arrow { position: absolute; right: 70px; bottom: 18px; color: rgba(246,242,233,.7); }
+
+/* ═══ 我的 ═══ */
+.me { padding: 110px 32px; display: flex; flex-direction: column; align-items: center; }
+.me-avatar {
+  width: 92px; height: 92px;
+  border-radius: 50%;
+  border: 1px solid rgba(200,161,94,.6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 42px; color: var(--green);
+}
+.me-name { margin-top: 22px; font-size: 25px; letter-spacing: 6px; }
+.me-note { margin-top: 12px; font-size: 15px; color: #9A9E93; letter-spacing: 2px; }
+
+/* ═══ 底部 TabBar ═══ */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  background: var(--paper);
+  border-top: 1px solid rgba(43,47,42,.06);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+}
+.tabbar button {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 12px 0 14px;
+  font-size: 14px;
+  color: var(--grey);
+  letter-spacing: 2px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.tabbar button.on { color: var(--green); font-weight: 600; }
+
+@media (max-width: 480px) {
+  .app { box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══ 首页 ═══ -->
+  <div id="view-home" class="view on">
+    <div class="hero">
+      <div class="hero-arrow"></div>
+    </div>
+    <div class="hero-after">丽珠集团出品</div>
+
+    <!-- ═══ 品牌故事段 ═══ -->
+    <div class="brand-story">
+      <div class="brand-story-lead serif">药与食，本是同源一味。</div>
+      <p class="brand-story-p">三千年前，《素问》写下"五谷为养"；一千四百年前，孙思邈立"先食后药"之法。山房承此古意，取恒山正北芪、陇西白条党参，以药企之谨，做日常之食。</p>
+      <div class="brand-story-end serif">四季流转，愿这一味，入你的一饮一食。</div>
+    </div>
+
+    <div class="section-head">
+      <div class="section-title serif">五养</div>
+      <div class="section-note">按场景，选一味</div>
+    </div>
+    <div class="section-line"></div>
+    <div class="h-scroll" id="sceneCards"></div>
+
+    <!-- ═══ 千年一味：竖版立轴，每页茶烟为底 ═══ -->
+    <div class="roll-wrap">
+      <div class="roll-frame">
+        <div class="roll-track" id="rollTrack">
+          <!-- 卷首：暖炉茶烟 -->
+          <div class="roll-pagebox">
+            <video class="roll-pagebg" src="images/tea.mp4" poster="images/tea-poster.jpg" muted autoplay loop playsinline disablepictureinpicture></video>
+            <div class="roll-pageveil"></div>
+            <div class="roll-page roll-page-head">
+              <div class="roll-title vertical brand-calli">千年一味</div>
+              <div class="roll-head-sub serif">今日食养，山房的回答</div>
+            </div>
+          </div>
+          <!-- 第一幕 -->
+          <div class="roll-pagebox">
+            <video class="roll-pagebg" src="images/tea-2.mp4" poster="images/tea-poster.jpg" muted autoplay loop playsinline disablepictureinpicture></video>
+            <div class="roll-pageveil"></div>
+            <div class="roll-page">
+              <div class="roll-time serif">一千四百年前</div>
+              <div class="roll-time-line"></div>
+              <div class="roll-item-title serif">立食治之法</div>
+              <div class="roll-item-text">孙思邈立食治之论，主张先食后药。黄芪党参皆在其列，性味平和，可日日入馔。这一法，我们沿用至今。</div>
+            </div>
+          </div>
+          <!-- 第二幕 -->
+          <div class="roll-pagebox">
+            <video class="roll-pagebg" src="images/tea-3.mp4" poster="images/tea-poster.jpg" muted autoplay loop playsinline disablepictureinpicture></video>
+            <div class="roll-pageveil"></div>
+            <div class="roll-page">
+              <div class="roll-time serif">山野之间</div>
+              <div class="roll-time-line"></div>
+              <div class="roll-item-title serif">两处基地</div>
+              <div class="roll-item-text">大同的黄芪，陇西的党参，皆出自我们自有的两处基地。仿野生种植，不施农药化肥，任它们在山野之间自在生长，根条紧实，味厚气足。</div>
+            </div>
+          </div>
+          <!-- 第三幕 -->
+          <div class="roll-pagebox">
+            <video class="roll-pagebg" src="images/tea-4.mp4" poster="images/tea-poster.jpg" muted autoplay loop playsinline disablepictureinpicture></video>
+            <div class="roll-pageveil"></div>
+            <div class="roll-page">
+              <div class="roll-time serif">今日</div>
+              <div class="roll-time-line"></div>
+              <div class="roll-item-title serif">药食同源，一味食养</div>
+              <div class="roll-item-text">丽珠做药四十年，参芪扶正乃我们承守之方。黄芪补气，党参健脾。自一千四百年前的食治之论，到今日的一方食养，方准相承，我们做成日常食养，药之严谨，食之温和。</div>
+            </div>
+          </div>
+        </div>
+        <div class="roll-rod top"></div>
+        <div class="roll-rod bottom"></div>
+      </div>
+      <div class="roll-dots">
+        <span class="on" data-i="0"></span><span data-i="1"></span><span data-i="2"></span><span data-i="3"></span>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <div class="section-title serif">山房荐</div>
+      <div class="section-note">两味，日常常备</div>
+    </div>
+    <div class="section-line"></div>
+    <div class="featured" id="featured"></div>
+
+    <div class="gift-entry" onclick="goGift()">
+      <div class="gift-entry-name vertical serif">致礼</div>
+      <div class="gift-entry-body">
+        <div class="gift-entry-title serif">体面之赠</div>
+        <div class="gift-entry-desc">节庆、商务、探病，一份参芪的心意</div>
+      </div>
+      <div class="gift-entry-arrow">→</div>
+    </div>
+
+    <div class="foot">
+      <div class="foot-promise serif">参芪好，食养才好</div>
+      <div class="foot-brand">参芪山房 丽珠集团出品</div>
+    </div>
+  </div>
+
+  <!-- ═══ 系列 ═══ -->
+  <div id="view-category" class="view">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="navbar-title serif">参芪山房 五养</div>
+      </div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div id="scenePanel"></div>  </div>
+
+  <!-- ═══ 礼盒 ═══ -->
+  <div id="view-gift" class="view">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="navbar-title serif">参芪山房 致礼</div>
+      </div>
+    </div>
+    <div class="gift-head">
+      <div class="gift-quote serif">黄耆色黄，为补者之长</div>
+      <div class="gift-quote-from">—— 《本草纲目》</div>
+      <div class="gift-note">节庆、商务、探病，一份参芪的心意</div>
+    </div>
+    <div id="giftList"></div>
+    <div class="foot">
+      <div class="foot-promise serif">参芪好，食养才好</div>
+    </div>
+  </div>
+
+  <!-- ═══ 我的 ═══ -->
+  <div id="view-mine" class="view">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="navbar-title serif">我的</div>
+      </div>
+    </div>
+    <div class="me">
+      <div class="me-avatar serif">山</div>
+      <div class="me-name serif">参芪山房</div>
+      <div class="me-note">登录、订单、卡券，正式版接入</div>
+    </div>
+    <div class="foot">
+      <div class="foot-promise serif">参芪好，食养才好</div>
+      <div class="foot-brand">参芪山房 丽珠集团出品</div>
+    </div>
+  </div>
+
+  <!-- TabBar -->
+  <div class="tabbar">
+    <button class="on" onclick="switchView('home', this)">首页</button>
+    <button onclick="switchView('category', this)">系列</button>
+    <button onclick="goGift(this)">礼盒</button>
+    <button onclick="switchView('mine', this)">我的</button>
+  </div>
+
+</div>
+
+<script>
+/* ═══ 数据（与小程序同源） ═══ */
+const scenes = [
+  { key:'daily', num:'壹', name:'日养', sub:'每日随饮', note:'日常轻调理，开盖即饮',
+    quote:'食饮有节', quoteFrom:'《素问 上古天真论》', color:'#4A5A49',
+    icon:'icon-leaf', img:'huangqi-leaf', banner:'banner-daily.jpg',
+    products:[
+      { name:'参芪露', desc:'日常轻养，全家早晚一盏', spec:'250mL × 2瓶' },
+      { name:'参芪草本饮 黑金', desc:'开盖即饮，每日一至两瓶', spec:'10mL × 20瓶' },
+      { name:'参芪草本饮 金', desc:'多规格多浓度，自用馈赠两宜', spec:'30mL × 15瓶 / 30mL × 7瓶' },
+      { name:'黄芪党参植物饮', desc:'配方干净无添加，一撕即饮', spec:'30mL × 10袋' },
+      { name:'黄芪党参植物饮 条装', desc:'随身一条，早晚一袋', spec:'10mL × 30袋' },
+      { name:'参芪固体饮料', desc:'参芪本味，温润回甘', spec:'6g × 10袋' }
+    ]},
+  { key:'season', num:'贰', name:'时养', sub:'顺时而食', note:'节气汤包与膏方，应季而食',
+    quote:'司岁备物', quoteFrom:'《素问 至真要大论》', color:'#8C7A52',
+    icon:'icon-root', img:'huangqi-root', banner:'banner-season.jpg',
+    products:[
+      { name:'黄芪四神汤', desc:'顺应节气食补，煲汤煮茶两用', spec:'12g × 10袋' },
+      { name:'黄芪五指毛桃汤', desc:'煲汤煮茶两用，顺应节气', spec:'15g × 8袋' },
+      { name:'党参佛手汤', desc:'煲汤煮茶两用，温和本草', spec:'15g × 8袋' },
+      { name:'黄芪党参膏', desc:'非遗熬膏工艺，开盖即食', spec:'200g / 瓶' },
+      { name:'黄芪秋梨膏', desc:'非遗熬膏工艺，温水冲调', spec:'200g / 瓶' }
+    ]},
+  { key:'recover', num:'叁', name:'复元', sub:'病后调元', note:'病后术后的温和回补',
+    quote:'形不足者，温之以气', quoteFrom:'《素问 阴阳应象大论》', color:'#2E3532',
+    icon:'icon-flower', img:'dangshen-mid', banner:'banner-recover.jpg',
+    products:[
+      { name:'参芪浓缩液', desc:'恒山正北芪 × 陇西白条党参，高倍凝萃', spec:'10mL × 10瓶，黑金' },
+      { name:'参芪臻品', desc:'黄芪党参切片礼盒，可煲汤煮水', spec:'6g × 15袋 × 2' },
+      { name:'浑源正北芪', desc:'六年以上正北芪切片，古韵礼盒', spec:'200g × 2罐' }
+    ]},
+  { key:'tea', num:'肆', name:'清饮', sub:'茶叙一刻', note:'办公、会议、独处的一杯',
+    quote:'豆蔻连梢煎熟水，莫分茶', quoteFrom:'李清照《摊破浣溪沙》', color:'#6E7B6C',
+    icon:'icon-bell', img:'dangshen-flower', banner:'herb.jpg',
+    products:[
+      { name:'养元茶', desc:'科学配比草本食材，独立小罐', spec:'10g × 20罐' },
+      { name:'金泉红叶', desc:'独立小罐，可反复续泡', spec:'10g × 20罐' },
+      { name:'黄芪茉莉花茶', desc:'古方非遗，即泡即饮', spec:'3g × 10杯' },
+      { name:'仙草汇', desc:'黄芪、西洋参、石斛，精制馈赠', spec:'12袋 × 3' }
+    ]},
+  { key:'gift', num:'伍', name:'致礼', sub:'体面之赠', note:'节庆、商务、探病送礼',
+    quote:'黄耆色黄，为补者之长', quoteFrom:'《本草纲目》', color:'#7A5C3E',
+    icon:'icon-seal', img:'huangqi-full', banner:'banner-gift.jpg',
+    products:[
+      { name:'丽珠正北 弘毅', desc:'一等黄芪，昔为东方御贡之品', spec:'8g × 30袋' },
+      { name:'丽珠正北 恬淡', desc:'二等黄芪，沉稳之选', spec:'8g × 30袋' },
+      { name:'丽珠正北 行健', desc:'三等黄芪，日常之赠', spec:'8g × 30袋' },
+      { name:'黑金参芪浓缩液', desc:'开盖即饮的体面', spec:'10mL × 10瓶' },
+      { name:'仙草汇礼盒', desc:'黄芪、西洋参、石斛三味相赠', spec:'12袋 × 3' },
+      { name:'浑源正北芪礼盒', desc:'古韵高端礼盒，自用送礼皆宜', spec:'200g × 2罐' },
+      { name:'参芪臻品礼盒', desc:'适配多种食补场景，轻松解锁本草滋养', spec:'6g × 15袋 × 2' }
+    ]}
+];
+
+/* 千年一味手卷：横滑吸附，刻度跟随 */
+const rollTrack = document.getElementById('rollTrack');
+const rollDotEls = document.querySelectorAll('.roll-dots span');
+rollDotEls.forEach(d => d.addEventListener('click', () => {
+  rollTrack.scrollTo({ left: Number(d.dataset.i) * rollTrack.clientWidth, behavior: 'smooth' });
+}));
+let rollTick = false;
+rollTrack.addEventListener('scroll', () => {
+  if (rollTick) return;
+  rollTick = true;
+  requestAnimationFrame(() => {
+    rollTick = false;
+    const i = Math.round(rollTrack.scrollLeft / rollTrack.clientWidth);
+    rollDotEls.forEach((el, j) => el.classList.toggle('on', i === j));
+  });
+}, { passive: true });
+
+const featured = [
+  { name:'参芪浓缩液', img:'huangqi-full', desc:'恒山正北芪 × 陇西白条党参，高倍凝萃', spec:'10mL × 10瓶，黑金礼盒' },
+  { name:'黄芪党参植物饮', img:'dangshen-mid', desc:'配方干净无添加，一撕即饮', spec:'30mL × 10袋，便携装' }
+];
+
+/* ═══ 渲染：首页 ═══ */
+document.getElementById('sceneCards').innerHTML = scenes.map((s, i) => `
+  <div class="scene-card" style="background:${s.color}" onclick="goScene(${i})">
+    <div class="scene-num serif">${s.num}</div>
+    <img class="scene-icon" src="images/illust/${s.icon}.png" alt="">
+    <div class="scene-name serif">${s.name}</div>
+    <div class="scene-desc">${s.note}</div>
+    <div class="scene-quote vertical serif">${s.quote}</div>
+    <div class="scene-more">入此系列 →</div>
+  </div>`).join('');
+
+document.getElementById('featured').innerHTML = featured.map(p => `
+  <div class="feat-card">
+    <div class="feat-img">
+      <img src="images/illust/${p.img}.png" style="object-position:${p.pos}" alt="${p.name}">
+    </div>
+    <div class="feat-body">
+      <div class="feat-name serif">${p.name}</div>
+      <div class="feat-desc">${p.desc}</div>
+      <div class="feat-spec">${p.spec}</div>
+    </div>
+  </div>`).join('');
+
+/* ═══ 渲染：系列页 ═══ */
+let activeScene = 0;
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = scenes.map((s, i) => `
+    <div class="tab ${i === activeScene ? 'on' : ''}" onclick="setScene(${i})">
+      <div class="t-name serif">${s.name}</div>
+      <div class="t-sub">${s.sub}</div>
+    </div>`).join('');
+}
+function renderScene() {
+  const s = scenes[activeScene];
+  document.getElementById('scenePanel').innerHTML = `
+    ${s.banner ? `<div class="scene-banner"><img src="images/${s.banner}" alt="${s.name}"></div>` : ''}
+    <div class="scene-head">
+      <div class="scene-rail" style="background:${s.color}"></div>
+      <div>
+        <div class="scene-big serif">${s.name}</div>
+        <div class="scene-full">${s.name} ${s.sub}</div>
+        <div class="scene-note">${s.note}</div>
+      </div>
+      <div class="scene-head-quote">
+        <div class="scene-quote serif">${s.quote}</div>
+        <div class="scene-quote-from">—— ${s.quoteFrom}</div>
+      </div>
+    </div>
+    ${s.products.map(p => `
+      <div class="product">
+        <div class="p-rail" style="background:${s.color}"></div>
+        <div class="p-img">
+          <img src="images/illust/${s.img}.png" alt="${p.name}">
+        </div>
+        <div class="p-body">
+          <div class="p-name serif">${p.name}</div>
+          <div class="p-desc">${p.desc}</div>
+          <div class="p-spec">${p.spec}</div>
+        </div>
+        <div class="p-arrow">→</div>
+      </div>`).join('')}
+    <div class="scene-foot">—— 本系列已尽 ——</div>`;
+  renderTabs();
+}
+function setScene(i) {
+  activeScene = i;
+  renderScene();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══ 渲染：礼盒页 ═══ */
+const giftBgs = [
+  'linear-gradient(120deg,#5C4630,#7A5C3E)', 'linear-gradient(120deg,#3E4A57,#55636E)',
+  'linear-gradient(120deg,#6E6334,#8C7A52)', 'linear-gradient(120deg,#23282B,#3A4038)',
+  'linear-gradient(120deg,#4A5A49,#6E7B6C)', 'linear-gradient(120deg,#5A4A3A,#8A6E4E)',
+  'linear-gradient(120deg,#6B3A34,#8C5248)'
+];
+const giftWords = ['弘毅','恬淡','行健','浓缩','仙草','正北','臻品'];
+document.getElementById('giftList').innerHTML = scenes[4].products.map((p, i) => `
+  <div class="g-card" style="background:${giftBgs[i]}">
+    <div class="g-word vertical serif">${giftWords[i]}</div>
+    <div class="g-body">
+      <div class="g-name serif">${p.name}</div>
+      <div class="g-desc">${p.desc}</div>
+      <div class="g-spec">${p.spec}</div>
+    </div>
+    <div class="g-arrow">→</div>
+  </div>`).join('');
+
+/* ═══ 视图切换 ═══ */
+function switchView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('view-' + name).classList.add('on');
+  document.querySelectorAll('.tabbar button').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  else document.querySelectorAll('.tabbar button')[name === 'home' ? 0 : name === 'category' ? 1 : name === 'gift' ? 2 : 3].classList.add('on');
+  window.scrollTo(0, 0);
+}
+function goScene(i) {
+  setScene(i);
+  switchView('category', document.querySelectorAll('.tabbar button')[1]);
+}
+function goGift(btn) {
+  switchView('gift', btn || document.querySelectorAll('.tabbar button')[2]);
+}
+
+renderScene();
+</script>
+</body>
+</html>
